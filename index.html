@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nanobubble Cleaning Digital Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Custom Styles for an Immersive Digital Lab Feel */
         :root {
-            --primary-color: #1a1a2e; /* Dark Blue Background */
-            --accent-color: #00bcd4; /* Cyan/Aqua for Highlights */
-            --success-color: #4CAF50; /* Green for Success */
-            --warning-color: #FFC107; /* Yellow for Metrics */
-            --text-color: #e4e4e7; /* Light text */
-            --subtle-text: #a1a1aa; /* Subtle text */
-            --contaminant-color: #5d4037; /* Dark Brown/Rust */
-            --nanobubble-color: rgba(128, 216, 255, 0.8); /* Light Blue Bubble */
-            --glass-color: rgba(150, 200, 255, 0.15); /* Light blue tint for glass effect */
-            --glass-border: rgba(150, 200, 255, 0.5); 
+            --primary-color: #1a1a2e;
+            --accent-color: #00bcd4;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --text-color: #e4e4e7;
+            --subtle-text: #a1a1aa;
+            --contaminant-color: #5d4037;
+            --nanobubble-color: rgba(128, 216, 255, 0.8);
+            --glass-color: rgba(150, 200, 255, 0.15);
+            --glass-border: rgba(150, 200, 255, 0.6); 
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scroll */
         }
 
         body {
@@ -28,61 +34,119 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 10px; /* Reduced body padding for better fit */
         }
 
         .container {
-            max-width: 950px; /* Slightly constrained width for wider screens */
-            width: 95%;
-            /* CRUCIAL: Max height to prevent vertical overflow */
-            max-height: calc(100vh - 20px); 
-            overflow-y: auto; /* Scroll only if absolutely necessary, but should prevent it */
-            
-            background-color: #24243e; /* Slightly lighter inner panel */
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 20px; /* Reduced container padding */
+            width: 100%;
+            height: 100%;
+            max-width: 950px;
+            background-color: #24243e;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        /* Header Area - Fixed Height */
+        .header-area {
+            flex: 0 0 auto;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Main Content - Flexible */
+        .content-area {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 0; /* Crucial for nested flex scrolling */
+            width: 100%;
+            position: relative;
         }
 
         .card {
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0.75rem;
-            padding: 20px;
+            padding: 0.5rem;
             background-color: #2d2d4d;
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Canvas wrapper takes available space */
+        .canvas-wrapper {
+            flex: 1 1 auto;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 0;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
         }
 
         canvas {
             background-color: #1a1a2e;
             border-radius: 0.5rem;
-            /* Ensures canvas width is fluid but maintains fixed drawing dimensions */
-            width: 100%; 
-            height: 400px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            /* Max dimensions to ensure it doesn't overflow */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Controls Area - Fixed Height at bottom */
+        .controls-area {
+            flex: 0 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
             background-color: var(--accent-color);
             color: var(--primary-color);
-            padding: 12px 24px;
-            border-radius: 0.75rem;
+            padding: 10px 20px;
+            border-radius: 0.5rem;
             font-weight: 700;
             transition: transform 0.2s, box-shadow 0.2s;
             text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+            font-size: 0.9rem;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4);
+        }
+
+        select {
+            font-size: 0.9rem;
+            padding: 0.4rem;
+        }
+
+        .metric-box {
+            font-size: 0.8rem;
         }
 
         .progress-bar-container {
-            height: 12px;
+            height: 8px;
             background-color: #3f3f5a;
-            border-radius: 6px;
+            border-radius: 4px;
             overflow: hidden;
-            margin-top: 10px;
+            width: 100%;
+            margin-bottom: 0.5rem;
         }
 
         .progress-bar {
@@ -94,9 +158,9 @@
 
         .metric-gauge {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background-color: #3f3f5a;
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
         }
 
@@ -106,80 +170,86 @@
             background-color: var(--warning-color);
             transition: width 0.5s ease-out;
         }
+        
+        @media (min-width: 768px) {
+            .container { border-radius: 1rem; padding: 1.5rem; height: 95vh; }
+            .card { padding: 1rem; }
+            .btn-primary { padding: 12px 24px; font-size: 1rem; }
+            h1 { font-size: 2.25rem; }
+        }
     </style>
 </head>
 <body class="selection:bg-cyan-500 selection:text-white">
 
     <div class="container">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-500">
-            Nanobubble Cleaning Digital Lab Simulation
-        </h1>
-        <p class="text-center text-sm mb-4 text-subtle-text">Project: Electrolyte-Enhanced Nanobubble Cavitation for Surface Decontamination</p>
+        <div class="header-area">
+            <h1 class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-500 leading-tight">
+                Nanobubble Cleaning Lab
+            </h1>
+            <p class="text-xs text-subtle-text mt-1 truncate">Project: Electrolyte-Enhanced Cavitation</p>
+        </div>
 
-        <!-- Main Content Area -->
-        <div class="card p-4 sm:p-8">
-            <canvas id="experimentCanvas" width="800" height="400"></canvas>
-            
-            <!-- Step 1: Setup Screen -->
-            <div id="setupDiv" class="text-center py-4">
-                <h2 class="text-2xl font-semibold text-text-color mb-3">SETUP: Optimize Nanobubble Cleaning</h2>
-                <p class="mb-5 text-subtle-text">Our hypothesis is that a **mild electrolyte (0.01M NaCl)** provides the optimal nanobubble stability, leading to maximum contaminant removal.</p>
-                
-                <!-- Concentration Selector: Uses responsive stacking -->
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mb-6 text-left">
-                    <div class="w-full sm:w-1/3 p-4 bg-gray-700/30 rounded-lg shadow-inner">
-                        <label for="concentration" class="block text-sm font-medium text-accent-color mb-2">Select Electrolyte Concentration:</label>
-                        <select id="concentration" class="w-full p-2 rounded-md bg-gray-700 text-text-color border border-gray-600 focus:ring-cyan-500 focus:border-cyan-500">
-                            <option value="0.0">Pure Water (Control: 0.0M NaCl)</option>
-                            <option value="0.005">Low Salt (0.005M NaCl)</option>
-                            <option value="0.01" selected>Optimized Salt (0.01M NaCl)</option>
-                            <option value="0.02">High Salt (0.02M NaCl)</option>
-                        </select>
-                    </div>
+        <div class="content-area">
+            <div class="card">
+                <!-- Canvas auto-resizes in this wrapper -->
+                <div class="canvas-wrapper" id="canvasContainer">
+                    <canvas id="experimentCanvas"></canvas>
                 </div>
 
-                <button id="startButton" class="btn-primary" onclick="startExperiment()">
-                    Start Nanobubble Experiment
-                </button>
-            </div>
-
-            <!-- Step 2: Running Screen -->
-            <div id="runningDiv" class="hidden text-center py-1">
-                <h2 class="text-xl font-semibold text-accent-color mb-2">EXPERIMENT RUNNING... (12 Seconds)</h2>
-                <div class="progress-bar-container mb-2">
-                    <div id="progressBar" class="progress-bar"></div>
-                </div>
-                <p id="phaseStatus" class="text-lg font-mono text-success-color mb-1"></p>
-
-                <!-- Live Metrics: Responsive Stacking/Side-by-Side -->
-                <div class="flex flex-wrap justify-center sm:justify-around items-start mt-3 mb-1 gap-y-4">
-                    <div class="w-full sm:w-5/12 text-left p-3 rounded-lg bg-gray-700/30">
-                        <span class="text-sm font-bold block text-subtle-text">Nanobubble Stability (CFD)</span>
-                        <div class="metric-gauge">
-                            <div id="stabilityGauge" class="metric-fill"></div>
+                <!-- Controls Section -->
+                <div class="controls-area">
+                    
+                    <!-- Setup Controls -->
+                    <div id="setupDiv" class="w-full max-w-md flex flex-col items-center gap-2">
+                        <div class="w-full bg-gray-700/30 rounded p-2 text-left">
+                            <label for="concentration" class="block text-xs font-medium text-accent-color mb-1">Electrolyte Concentration:</label>
+                            <select id="concentration" class="w-full bg-gray-700 text-text-color border border-gray-600 rounded focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer">
+                                <option value="0.0">Pure Water (Control: 0.0M)</option>
+                                <option value="0.005">Low Salt (0.005M NaCl)</option>
+                                <option value="0.01" selected>Optimized Salt (0.01M NaCl)</option>
+                                <option value="0.02">High Salt (0.02M NaCl)</option>
+                            </select>
+                            <p class="text-[10px] text-gray-400 mt-1 italic truncate" id="concentrationDesc">*Current: Optimum conditions hypothesized.</p>
                         </div>
-                        <span id="stabilityValue" class="text-xs text-warning-color mt-1 block">0%</span>
+                        <button id="startButton" class="btn-primary" onclick="startExperiment()">Run Simulation</button>
                     </div>
-                    <div class="w-full sm:w-5/12 text-left p-3 rounded-lg bg-gray-700/30">
-                        <span class="text-sm font-bold block text-subtle-text">Micro-Jet Velocity (MD)</span>
-                        <div class="metric-gauge">
-                            <div id="velocityGauge" class="metric-fill"></div>
+
+                    <!-- Running Controls -->
+                    <div id="runningDiv" class="hidden w-full flex flex-col items-center">
+                        <div class="w-full flex justify-between items-end mb-1 px-1">
+                            <span class="text-xs font-bold text-accent-color">RUNNING...</span>
+                            <span id="phaseStatus" class="text-[10px] font-mono text-success-color text-right truncate w-2/3">Phase 1...</span>
                         </div>
-                        <span id="velocityValue" class="text-xs text-warning-color mt-1 block">0 m/s</span>
+                        <div class="progress-bar-container">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                        
+                        <div class="flex w-full gap-2 mt-1">
+                            <div class="flex-1 bg-gray-700/30 rounded p-2 metric-box">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-subtle-text">Stability</span>
+                                    <span id="stabilityValue" class="text-warning-color font-mono">0%</span>
+                                </div>
+                                <div class="metric-gauge"><div id="stabilityGauge" class="metric-fill"></div></div>
+                            </div>
+                            <div class="flex-1 bg-gray-700/30 rounded p-2 metric-box">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-subtle-text">Velocity</span>
+                                    <span id="velocityValue" class="text-warning-color font-mono">0 m/s</span>
+                                </div>
+                                <div class="metric-gauge"><div id="velocityGauge" class="metric-fill"></div></div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Results Controls -->
+                    <div id="resultsDiv" class="hidden w-full flex flex-col items-center gap-2">
+                        <h2 class="text-lg font-bold text-success-color" id="finalTitle">FINAL RESULTS</h2>
+                        <button class="btn-primary" onclick="restartExperiment()">New Experiment</button>
+                    </div>
+
                 </div>
-
             </div>
-
-            <!-- Step 3: Results Screen -->
-            <div id="resultsDiv" class="hidden text-center py-4">
-                <h2 class="text-2xl font-bold text-success-color mb-3">FINAL RESULTS: Contaminant Removal Efficiency</h2>
-                <p class="mb-5 text-subtle-text">Comparing the optimized solution against controls reveals the maximum cleaning power.</p>
-                <button class="btn-primary" onclick="restartExperiment()">
-                    Restart Experiment
-                </button>
-            </div>
-
         </div>
     </div>
 
@@ -187,203 +257,283 @@
         // --- Canvas and DOM Setup ---
         const canvas = document.getElementById('experimentCanvas');
         const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
         
+        // Logical resolution 
+        const LOGICAL_WIDTH = 800;
+        const LOGICAL_HEIGHT = 450;
+        let scaleFactor = 1;
+
         const setupDiv = document.getElementById('setupDiv');
         const runningDiv = document.getElementById('runningDiv');
         const resultsDiv = document.getElementById('resultsDiv');
         const phaseStatus = document.getElementById('phaseStatus');
         const progressBar = document.getElementById('progressBar');
         const concentrationSelect = document.getElementById('concentration');
+        const concentrationDesc = document.getElementById('concentrationDesc');
+        const finalTitle = document.getElementById('finalTitle');
 
         const stabilityGauge = document.getElementById('stabilityGauge');
         const stabilityValue = document.getElementById('stabilityValue');
         const velocityGauge = document.getElementById('velocityGauge');
         const velocityValue = document.getElementById('velocityValue');
 
-        // --- Color Constants (JS equivalent of CSS variables for Canvas) ---
+        // --- Constants ---
         const ACCENT_COLOR = '#00bcd4';
         const PRIMARY_COLOR = '#1a1a2e';
         const CONTAMINANT_COLOR = '#5d4037';
         const NANOBUBBLE_COLOR = 'rgba(128, 216, 255, 0.8)';
         const WARNING_COLOR = '#FFC107';
         const TEXT_COLOR = '#e4e4e7';
-        // Updated Beaker Colors for better glass effect
         const BEAKER_COLOR = 'rgba(150, 200, 255, 0.15)'; 
-        const BEAKER_STROKE = 'rgba(150, 200, 255, 0.5)';
+        const BEAKER_STROKE = 'rgba(150, 200, 255, 0.6)'; 
 
+        // --- Enhanced Responsive Canvas Logic ---
+        function resizeCanvas() {
+            if (!canvasContainer) return;
 
-        // --- Nanobubble Simulation Data (Fixed for the demonstration) ---
-        const experimentPhases = [
-            '1 of 3: Phase 1: Running CFD for Nanobubble Stability (Lifespan Model)...',
-            '2 of 3: Phase 2: Molecular Dynamics of Cavitation Event (Micro-Jet Velocity)...',
-            '3 of 3: Phase 3: Calculating Contaminant Removal Efficiency (Final Data)...'
-        ];
+            // Available space in the wrapper
+            const availableWidth = canvasContainer.clientWidth;
+            const availableHeight = canvasContainer.clientHeight;
 
-        // Cleaning Efficiency Data (The award-winning data)
-        const resultsData = {
-            '0.0': { efficiency: 35, color: '#e57373' }, // Pure Water (low)
-            '0.005': { efficiency: 68, color: '#ffee58' }, // Low Salt (better)
-            '0.01': { efficiency: 92, color: '#66bb6a' },  // Optimized Salt (best)
-            '0.02': { efficiency: 45, color: '#ff8a65' }   // High Salt (worse due to surface tension)
+            // Desired Aspect Ratio
+            const aspectRatio = LOGICAL_WIDTH / LOGICAL_HEIGHT;
+
+            // Calculate scaling to fit CONTAIN within available space
+            let displayWidth, displayHeight;
+
+            if (availableWidth / availableHeight < aspectRatio) {
+                // Width limited
+                displayWidth = availableWidth;
+                displayHeight = availableWidth / aspectRatio;
+            } else {
+                // Height limited
+                displayHeight = availableHeight;
+                displayWidth = availableHeight * aspectRatio;
+            }
+
+            // Set canvas size
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+            
+            // Calculate scale factor relative to logical size
+            scaleFactor = displayWidth / LOGICAL_WIDTH;
+            
+            // Force redraw
+            if (!simulationRunning && !resultsAnimating && !currentScenario) {
+                drawSetupScreen();
+            } else if (currentScenario && !simulationRunning && !resultsAnimating) {
+                if(currentScenario) drawSingleResultCard();
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // --- Simulation Configuration Data ---
+        const scenarioData = {
+            '0.0': { 
+                name: 'Pure Water (Control)',
+                stability: 35, velocity: 40, bubbleRate: 0.1, bubbleLife: 0.3, efficiency: 35, color: '#e57373',
+                desc: "Pure water lacks ions to stabilize the bubble surface.",
+                analysis: ["Analysis: FAILED. Weak repulsive forces.", "Result: Minimal cleaning."]
+            },
+            '0.005': { 
+                name: 'Low Salt (0.005M)',
+                stability: 65, velocity: 70, bubbleRate: 0.5, bubbleLife: 0.7, efficiency: 68, color: '#ffee58',
+                desc: "Small electrolyte amount improves stability.",
+                analysis: ["Analysis: MODERATE. Reduced coalescence.", "Result: Partial cleaning."]
+            },
+            '0.01': { 
+                name: 'Optimized Salt (0.01M)',
+                stability: 95, velocity: 110, bubbleRate: 1.0, bubbleLife: 1.0, efficiency: 92, color: '#66bb6a',
+                desc: "Optimal ionic strength maximizes cavitation.",
+                analysis: ["Analysis: SUCCESS. Optimized Zeta Potential.", "Result: Max efficiency."]
+            },
+            '0.02': { 
+                name: 'High Salt (0.02M)',
+                stability: 50, velocity: 55, bubbleRate: 0.4, bubbleLife: 0.6, efficiency: 45, color: '#ff8a65',
+                desc: "Excessive salt increases surface tension.",
+                analysis: ["Analysis: SUB-OPTIMAL. Shielding effect.", "Result: Reduced cleaning."]
+            }
         };
+
+        const experimentPhases = [
+            'Stability Analysis...', 'Modeling Jets...', 'Calculating Eff...'
+        ];
 
         let bubbles = [];
         let contaminantHeight = 50;
         let animationFrameId = null;
         let simulationRunning = false;
+        let resultsAnimating = false;
+        let resultAnimationProgress = 0; 
+        let currentScenario = null;
         
-        // Beaker Dimensions for clipping and drawing (Fixed size for consistent visualization)
+        // Logical Dimensions for Griffin Beaker
         const beaker = {
-            width: 300,
-            height: 350,
-            radius: 50, // Radius for the rounded bottom
-            x: 0,
-            y: 0,
-            wallThickness: 10 // Thicker walls for better visibility
+            width: 280, height: 320, radius: 15, x: 0, y: 0, wallThickness: 8
         };
 
-        // --- Initialization and Utility Functions ---
+        concentrationSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if(scenarioData[val]) concentrationDesc.textContent = scenarioData[val].desc;
+        });
 
-        // Function to draw the Beaker shape and return a path for clipping
+        // --- Drawing Helpers ---
+        function clearAndScale() {
+            ctx.setTransform(1, 0, 0, 1, 0, 0); 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = PRIMARY_COLOR;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.scale(scaleFactor, scaleFactor);
+        }
+
         function drawBeaker(x, y, isOutline = true) {
-            ctx.lineWidth = isOutline ? 4 : 1; // Thicker outline
-            ctx.strokeStyle = isOutline ? BEAKER_STROKE : ACCENT_COLOR;
+            ctx.lineWidth = isOutline ? 3 : 1;
+            ctx.strokeStyle = isOutline ? BEAKER_STROKE : 'rgba(255,255,255,0.1)';
             ctx.fillStyle = BEAKER_COLOR;
 
             const halfWidth = beaker.width / 2;
             const top = y;
-            const bottomStraight = y + beaker.height - beaker.radius;
-            const centerBottomY = y + beaker.height - beaker.radius;
+            const bottom = y + beaker.height;
+            const cornerRadius = beaker.radius;
 
             ctx.beginPath();
-            
-            // Top rim, start top left
             ctx.moveTo(x - halfWidth, top);
+            ctx.lineTo(x - halfWidth, bottom - cornerRadius);
+            ctx.quadraticCurveTo(x - halfWidth, bottom, x - halfWidth + cornerRadius, bottom);
+            ctx.lineTo(x + halfWidth - cornerRadius, bottom);
+            ctx.quadraticCurveTo(x + halfWidth, bottom, x + halfWidth, bottom - cornerRadius);
             ctx.lineTo(x + halfWidth, top);
-
-            // Right side (straight down)
-            ctx.lineTo(x + halfWidth, bottomStraight);
-
-            // Rounded bottom (Arc)
-            // Use a specific arc size to make it look like lab glassware
-            ctx.arc(x, centerBottomY, halfWidth, 0, Math.PI, false);
-
-            // Left side (straight up)
-            ctx.lineTo(x - halfWidth, top);
-
-            if (!isOutline) {
+            ctx.lineTo(x + halfWidth + 10, top - 5); 
+            ctx.lineTo(x + halfWidth, top); 
+            
+            if (isOutline) {
+               ctx.stroke();
+               ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+               ctx.font = '10px Inter';
+               ctx.textAlign = 'right';
+               const step = beaker.height / 6;
+               for(let i=1; i<=5; i++) {
+                   const tickY = bottom - (step * i);
+                   ctx.beginPath();
+                   ctx.moveTo(x - halfWidth, tickY);
+                   ctx.lineTo(x - halfWidth + 15, tickY);
+                   ctx.stroke();
+                   ctx.fillText((i * 100) + 'ml', x - halfWidth - 5, tickY + 3);
+               }
+            } else {
                 ctx.fill();
             }
-            ctx.stroke();
             ctx.closePath();
-            
-            // Return the path for clipping usage later
             return new Path2D(ctx.currentPath);
         }
         
         function drawSetupScreen() {
-            ctx.fillStyle = PRIMARY_COLOR;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            clearAndScale();
 
-            const midX = canvas.width / 2;
-            const midY = canvas.height / 2; 
-            const topY = 30;
+            const midX = LOGICAL_WIDTH / 2;
+            const midY = LOGICAL_HEIGHT / 2;
+            const topY = 40;
             beaker.x = midX;
             beaker.y = topY;
 
-            // --- Draw Beaker Glass Effect ---
-            // Draw the inner container area (the liquid area)
-            const innerHalfWidth = beaker.width / 2 - 2;
-            const innerX = midX;
-            const innerY = topY + 2;
-            
-            // Draw the full beaker outline first (looks better this way)
             drawBeaker(midX, topY, true);
 
-            // Fill with initial water (clipped to the inner area)
             ctx.save();
-            
-            // Create the path for clipping the liquid content
+            const innerHalfWidth = beaker.width / 2 - 4;
+            const innerX = midX;
+            const innerTop = topY + 10; 
+            const innerBottom = topY + beaker.height - 4;
+
             ctx.beginPath();
-            ctx.moveTo(innerX - innerHalfWidth, innerY);
-            ctx.lineTo(innerX + innerHalfWidth, innerY);
-            ctx.lineTo(innerX + innerHalfWidth, innerY + beaker.height - beaker.radius);
-            ctx.arc(innerX, innerY + beaker.height - beaker.radius, innerHalfWidth, 0, Math.PI, false);
-            ctx.lineTo(innerX - innerHalfWidth, innerY);
-            ctx.closePath();
-            ctx.clip(); // Apply clipping to the inner liquid area
+            ctx.rect(innerX - innerHalfWidth, innerTop, innerHalfWidth * 2, innerBottom - innerTop);
+            ctx.clip();
 
             const waterGradient = ctx.createLinearGradient(0, topY + beaker.height, 0, topY);
             waterGradient.addColorStop(0, 'rgba(0, 188, 212, 0.4)');
             waterGradient.addColorStop(1, 'rgba(0, 188, 212, 0.1)');
             ctx.fillStyle = waterGradient;
-            ctx.fillRect(innerX - innerHalfWidth, innerY, beaker.width, beaker.height);
+            ctx.fillRect(innerX - innerHalfWidth, innerTop, beaker.width, beaker.height);
             
-            // Draw Contaminant Layer at the bottom (clipped)
             ctx.fillStyle = CONTAMINANT_COLOR;
-            ctx.fillRect(innerX - innerHalfWidth, innerY + beaker.height - contaminantHeight, beaker.width, contaminantHeight);
+            ctx.fillRect(innerX - innerHalfWidth, innerBottom - contaminantHeight, beaker.width, contaminantHeight);
+            ctx.restore();
             
-            ctx.restore(); // Restore clipping
+            // Base
+            ctx.fillStyle = '#37474f'; 
+            ctx.beginPath();
+            ctx.moveTo(midX - 160, topY + beaker.height + 5);
+            ctx.lineTo(midX + 160, topY + beaker.height + 5);
+            ctx.lineTo(midX + 170, topY + beaker.height + 35);
+            ctx.lineTo(midX - 170, topY + beaker.height + 35);
+            ctx.fill();
             
-            // Draw Aeration Nozzle/System outside
-            ctx.fillStyle = '#9e9e9e';
-            ctx.fillRect(midX - 30, topY + beaker.height + 10, 60, 10);
+            ctx.fillStyle = '#263238';
+            ctx.fillRect(midX - 170, topY + beaker.height + 35, 340, 15);
             
-            // Text labels (outside the beaker)
-            ctx.fillStyle = TEXT_COLOR;
-            ctx.font = '16px Inter';
+            ctx.fillStyle = '#90a4ae';
+            ctx.font = 'bold 12px Inter';
             ctx.textAlign = 'center';
-            ctx.fillText('Aerated Water + Electrolyte', midX, topY - 10);
-            ctx.fillText('Contaminant Target', midX, topY + beaker.height - 20);
-            ctx.fillText('Click Start to Model Cleaning Process', midX, midY);
+            ctx.fillText("NANOGENERATOR", midX, topY + beaker.height + 46);
+            
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '14px Inter';
+            ctx.fillText('Aqueous Phase', midX, midY - 10);
+
+            ctx.fillStyle = 'rgba(255, 180, 180, 0.9)';
+            ctx.fillText('Biofilm Layer', midX, topY + beaker.height - 25);
+            
+            ctx.fillStyle = ACCENT_COLOR;
+            ctx.font = 'bold 14px Inter';
+            ctx.fillText('STATUS: STANDBY', midX, topY - 20);
         }
 
         function createBubble(size = 3) {
+            const spawnWidth = beaker.width - 40; 
             return {
-                x: beaker.x - (beaker.width / 2) + Math.random() * beaker.width,
-                y: beaker.y + beaker.height - beaker.radius + Math.random() * beaker.radius, 
+                x: beaker.x - (spawnWidth / 2) + Math.random() * spawnWidth,
+                y: beaker.y + beaker.height - 15, 
                 radius: size + Math.random() * 2,
-                // REDUCED SPEED: Range 0.5 to 1.5 (much slower)
-                speed: 0.5 + Math.random() * 1.0, 
-                opacity: 0.5 + Math.random() * 0.5,
+                speed: 0.5 + Math.random() * 1.5, 
+                opacity: 0.1, 
+                maxOpacity: 0.6 + Math.random() * 0.4,
                 bursting: false,
                 burstTimer: 0
             };
         }
 
         function updateBubbles() {
-            const cleaningSurfaceY = beaker.y + beaker.height - contaminantHeight;
-            const innerHalfWidth = beaker.width / 2 - 2;
-            const innerX = beaker.x;
-            const innerY = beaker.y + 2;
+            const liquidBottomY = beaker.y + beaker.height - 4;
+            const cleaningSurfaceY = liquidBottomY - contaminantHeight;
+            const innerTopY = beaker.y + 10;
             
-            // Cleaning rate is tuned for the 12s duration
-            const cleaningRate = 0.075; 
+            const cleaningPower = (currentScenario.velocity / 100) * (currentScenario.stability / 100);
+            const baseRate = 0.15; 
 
             for (let i = bubbles.length - 1; i >= 0; i--) {
                 const b = bubbles[i];
                 b.y -= b.speed;
-                b.opacity = Math.min(1, b.opacity + 0.01);
+                
+                if (b.opacity < b.maxOpacity) b.opacity += 0.05;
 
-                // Check for collision with contaminant layer
-                if (b.y <= cleaningSurfaceY && b.y > cleaningSurfaceY - 5 && !b.bursting) {
-                    b.bursting = true;
-                    b.burstTimer = 10; // Start burst animation
-                    
-                    // Simulate removal - scaled for 12s duration
-                    contaminantHeight = Math.max(10, contaminantHeight - cleaningRate); 
+                if (!b.bursting && Math.random() > currentScenario.bubbleLife + 0.02) {
+                     b.bursting = true;
+                     b.burstTimer = 5; 
                 }
 
-                // Check if bubble has left the beaker at the top
-                const bubbleEscaped = b.y < innerY;
+                if (b.y <= cleaningSurfaceY && b.y > cleaningSurfaceY - 10 && !b.bursting) {
+                    b.bursting = true;
+                    b.burstTimer = 8; 
+                    contaminantHeight = Math.max(5, contaminantHeight - (baseRate * cleaningPower)); 
+                }
 
                 if (b.bursting) {
                     b.burstTimer--;
-                    if (b.burstTimer <= 0) {
-                        bubbles.splice(i, 1); // Remove burst bubble
-                    }
-                } else if (bubbleEscaped) {
-                    bubbles.splice(i, 1); // Remove escaped bubble
+                    if (b.burstTimer <= 0) bubbles.splice(i, 1);
+                } else if (b.y < innerTopY) {
+                    bubbles.splice(i, 1);
                 }
             }
         }
@@ -391,14 +541,12 @@
         function drawBubbles() {
             for (const b of bubbles) {
                 if (b.bursting) {
-                    // Draw white flash for cavitation
-                    ctx.fillStyle = `rgba(255, 255, 255, ${b.burstTimer / 10})`;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${b.burstTimer / 8})`;
                     ctx.beginPath();
-                    ctx.arc(b.x, b.y, b.radius * 3, 0, Math.PI * 2);
+                    ctx.arc(b.x, b.y, b.radius * 2, 0, Math.PI * 2);
                     ctx.fill();
                 } else {
-                    // Draw stable bubble
-                    ctx.fillStyle = NANOBUBBLE_COLOR;
+                    ctx.fillStyle = `rgba(128, 216, 255, ${b.opacity})`;
                     ctx.beginPath();
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fill();
@@ -407,159 +555,139 @@
         }
 
         function drawRunningScreen() {
-            // Draw background
-            ctx.fillStyle = PRIMARY_COLOR;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            clearAndScale();
 
-            const midX = canvas.width / 2;
-            const topY = 30;
+            const midX = LOGICAL_WIDTH / 2;
+            const topY = 40;
             beaker.x = midX;
             beaker.y = topY;
 
-            // Draw Beaker Outline
             drawBeaker(midX, topY, true);
 
-            // --- Start Clipping to Inner Liquid Area ---
             ctx.save();
-            const innerHalfWidth = beaker.width / 2 - 2;
+            const innerHalfWidth = beaker.width / 2 - 4;
             const innerX = midX;
-            const innerY = topY + 2;
+            const innerTop = topY + 10;
+            const innerBottom = topY + beaker.height - 4;
 
             ctx.beginPath();
-            ctx.moveTo(innerX - innerHalfWidth, innerY);
-            ctx.lineTo(innerX + innerHalfWidth, innerY);
-            ctx.lineTo(innerX + innerHalfWidth, innerY + beaker.height - beaker.radius);
-            ctx.arc(innerX, innerY + beaker.height - beaker.radius, innerHalfWidth, 0, Math.PI, false);
-            ctx.lineTo(innerX - innerHalfWidth, innerY);
-            ctx.closePath();
-            ctx.clip(); // Apply clipping
+            ctx.rect(innerX - innerHalfWidth, innerTop, innerHalfWidth * 2, innerBottom - innerTop);
+            ctx.clip(); 
 
-            // Fill with water
             const waterGradient = ctx.createLinearGradient(0, topY + beaker.height, 0, topY);
             waterGradient.addColorStop(0, 'rgba(0, 188, 212, 0.4)');
             waterGradient.addColorStop(1, 'rgba(0, 188, 212, 0.1)');
             ctx.fillStyle = waterGradient;
-            ctx.fillRect(innerX - innerHalfWidth, innerY, beaker.width, beaker.height);
+            ctx.fillRect(innerX - innerHalfWidth, innerTop, beaker.width, beaker.height);
 
-
-            // Draw Contaminant Layer at the bottom
             ctx.fillStyle = CONTAMINANT_COLOR;
-            ctx.fillRect(innerX - innerHalfWidth, innerY + beaker.height - contaminantHeight, beaker.width, contaminantHeight);
+            ctx.fillRect(innerX - innerHalfWidth, innerBottom - contaminantHeight, beaker.width, contaminantHeight);
             
-            // Draw Bubbles (must be drawn before restoring to remain inside beaker)
             updateBubbles();
             drawBubbles();
             
-            // End Clipping
             ctx.restore(); 
             
-            // Draw Aeration Nozzle/System outside
-            ctx.fillStyle = '#9e9e9e';
-            ctx.fillRect(midX - 30, topY + beaker.height + 10, 60, 10);
+             ctx.fillStyle = '#37474f';
+            ctx.beginPath();
+            ctx.moveTo(midX - 160, topY + beaker.height + 5);
+            ctx.lineTo(midX + 160, topY + beaker.height + 5);
+            ctx.lineTo(midX + 170, topY + beaker.height + 35);
+            ctx.lineTo(midX - 170, topY + beaker.height + 35);
+            ctx.fill();
+            ctx.fillStyle = '#263238';
+            ctx.fillRect(midX - 170, topY + beaker.height + 35, 340, 15);
+             ctx.fillStyle = '#90a4ae';
+            ctx.font = 'bold 12px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText("NANOGENERATOR", midX, topY + beaker.height + 46);
 
+            if (currentScenario && Math.random() < currentScenario.bubbleRate) { 
+                let spawnCount = 1;
+                if(currentScenario.bubbleRate >= 0.9) spawnCount = 4;
+                else if(currentScenario.bubbleRate >= 0.5) spawnCount = 2;
 
-            // Add new bubbles
-            if (Math.random() < 1.0) { // High frequency for active bubbling
-                bubbles.push(createBubble());
+                for(let k=0; k<spawnCount; k++) {
+                    bubbles.push(createBubble());
+                }
             }
         }
 
-        function drawMetrics(stabilityPct, velocityMs) {
-            const margin = 20;
-            const cardWidth = 300;
-            const cardHeight = 100;
+        function drawSingleResultCard() {
+            clearAndScale();
 
-            // Draw the metric box background
-            ctx.fillStyle = 'rgba(45, 45, 77, 0.8)'; // Dark card color
-            ctx.strokeStyle = ACCENT_COLOR;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(canvas.width - cardWidth - margin, margin, cardWidth, cardHeight);
-            ctx.fillRect(canvas.width - cardWidth - margin, margin, cardWidth, cardHeight);
+            const cx = LOGICAL_WIDTH / 2;
+            const cy = LOGICAL_HEIGHT / 2;
 
-            ctx.fillStyle = TEXT_COLOR;
-            ctx.font = 'bold 16px Inter';
-            ctx.textAlign = 'left';
-            ctx.fillText('Live Computational Metrics', canvas.width - cardWidth, margin + 20);
-
-            // Stability Gauge
-            ctx.font = '12px Inter';
-            ctx.fillText('Stability (CFD):', canvas.width - cardWidth, margin + 45);
-            ctx.fillStyle = '#3f3f5a'; // Base bar color
-            ctx.fillRect(canvas.width - cardWidth + 90, margin + 35, 180, 8);
-            ctx.fillStyle = WARNING_COLOR;
-            ctx.fillRect(canvas.width - cardWidth + 90, margin + 35, 180 * (stabilityPct / 100), 8);
-            ctx.fillText(`${stabilityPct}%`, canvas.width - cardWidth + 200, margin + 45);
-
-
-            // Velocity Gauge
-            ctx.fillText('Velocity (MD):', canvas.width - cardWidth, margin + 75);
-            ctx.fillStyle = '#3f3f5a'; // Base bar color
-            ctx.fillRect(canvas.width - cardWidth + 90, margin + 65, 180, 8);
+            const radius = 90;
+            const startAngle = -Math.PI;
+            const endAngle = 0;
             
-            const maxVelocity = 120; // Max velocity in m/s
-            const currentVelocityPct = velocityMs / maxVelocity;
-            ctx.fillStyle = WARNING_COLOR;
-            ctx.fillRect(canvas.width - cardWidth + 90, margin + 65, 180 * currentVelocityPct, 8);
-            ctx.fillText(`${velocityMs.toFixed(0)} m/s`, canvas.width - cardWidth + 200, margin + 75);
-        }
-
-        function drawResultsScreen() {
-            ctx.fillStyle = PRIMARY_COLOR;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const data = Object.values(resultsData);
-            const labels = Object.keys(resultsData).map(c => c + 'M NaCl');
-            const barWidth = 100;
-            const spacing = 50;
-            const startX = (canvas.width - (data.length * barWidth + (data.length - 1) * spacing)) / 2;
-            const baseY = canvas.height - 40;
-            const maxVal = 100;
-
-            // Draw X-Axis Line
-            ctx.strokeStyle = TEXT_COLOR;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#3f3f5a';
             ctx.beginPath();
-            ctx.moveTo(startX - 20, baseY);
-            ctx.lineTo(startX + data.length * barWidth + (data.length - 1) * spacing + 20, baseY);
+            ctx.arc(cx, cy - 50, radius, startAngle, endAngle);
             ctx.stroke();
 
-            data.forEach((item, index) => {
-                const x = startX + index * (barWidth + spacing);
-                const height = (item.efficiency / maxVal) * (canvas.height - 100);
+            const animatedEff = currentScenario.efficiency * resultAnimationProgress;
+            const progressAngle = startAngle + (animatedEff / 100) * (endAngle - startAngle);
+            
+            ctx.strokeStyle = currentScenario.color;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 50, radius, startAngle, progressAngle);
+            ctx.stroke();
 
-                // Draw Bar
-                ctx.fillStyle = item.color;
-                ctx.fillRect(x, baseY - height, barWidth, height);
-                
-                // Draw Bar Shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                ctx.fillRect(x + 5, baseY - height + 5, barWidth, height);
-                ctx.fillStyle = item.color;
-                ctx.fillRect(x, baseY - height, barWidth, height);
+            ctx.textAlign = 'center';
+            ctx.fillStyle = TEXT_COLOR;
+            ctx.font = 'bold 40px Inter';
+            ctx.fillText(`${Math.round(animatedEff)}%`, cx, cy - 60);
+            ctx.font = '14px Inter';
+            ctx.fillStyle = '#a1a1aa';
+            ctx.fillText('CLEANING EFFICIENCY', cx, cy - 30);
 
-                // Draw Label (Concentration)
+
+            if (resultAnimationProgress > 0.8) {
+                const boxY = cy + 20;
+                const boxHeight = 140;
+                const boxWidth = 600;
+                const safeBoxWidth = Math.min(boxWidth, LOGICAL_WIDTH - 40);
+
+                ctx.fillStyle = 'rgba(45, 45, 77, 0.5)';
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 1;
+                ctx.fillRect(cx - safeBoxWidth/2, boxY, safeBoxWidth, boxHeight);
+                ctx.strokeRect(cx - safeBoxWidth/2, boxY, safeBoxWidth, boxHeight);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = currentScenario.color;
+                ctx.font = 'bold 18px Inter';
+                ctx.fillText(currentScenario.name, cx - safeBoxWidth/2 + 20, boxY + 30);
+
                 ctx.fillStyle = TEXT_COLOR;
-                ctx.font = '14px Inter';
-                ctx.textAlign = 'center';
-                ctx.fillText(labels[index], x + barWidth / 2, baseY + 20);
+                ctx.font = '16px Inter';
+                let lineY = boxY + 60;
+                currentScenario.analysis.forEach(line => {
+                    ctx.fillText(line, cx - safeBoxWidth/2 + 20, lineY);
+                    lineY += 22;
+                });
+            }
 
-                // Draw Value (Efficiency %)
-                ctx.font = 'bold 20px Inter';
-                ctx.fillStyle = TEXT_COLOR;
-                ctx.fillText(`${item.efficiency}%`, x + barWidth / 2, baseY - height - 10);
-            });
+            if (resultsAnimating) {
+                resultAnimationProgress += 0.02;
+                if (resultAnimationProgress >= 1) {
+                    resultAnimationProgress = 1;
+                    resultsAnimating = false; 
+                }
+                animationFrameId = requestAnimationFrame(drawSingleResultCard);
+            }
         }
         
-        // --- Experiment Control ---
-
         function restartExperiment() {
-            // Stop any running animation
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
                 animationFrameId = null;
             }
 
-            // Reset visual states
             bubbles = [];
             contaminantHeight = 50;
             progressBar.style.width = '0%';
@@ -568,114 +696,112 @@
             stabilityValue.textContent = '0%';
             velocityValue.textContent = '0 m/s';
             simulationRunning = false;
+            resultsAnimating = false;
+            resultAnimationProgress = 0;
+            currentScenario = null;
             
-            // Show Setup Screen
             setupDiv.classList.remove('hidden');
             runningDiv.classList.add('hidden');
             resultsDiv.classList.add('hidden');
+            
+            resizeCanvas();
             drawSetupScreen();
         }
 
-
         function startExperiment() {
-            // Get selected concentration for potential data use (though data is fixed for demo)
-            const selectedConcentration = concentrationSelect.value;
-            console.log(`Starting experiment with ${selectedConcentration}M NaCl`);
-
-            // Hide setup, show running
+            const selectedValue = concentrationSelect.value;
+            currentScenario = scenarioData[selectedValue]; 
+            
             setupDiv.classList.add('hidden');
             resultsDiv.classList.add('hidden');
             runningDiv.classList.remove('hidden');
 
             simulationRunning = true;
-            contaminantHeight = 50; // Reset visual contaminant layer
+            contaminantHeight = 50; 
             bubbles = [];
             let phaseIndex = 0;
-            const totalDuration = 12000; // 12 seconds
-            const phaseInterval = totalDuration / experimentPhases.length; // 4000ms per phase
+            const totalDuration = 10000; 
+            const phaseInterval = totalDuration / experimentPhases.length; 
 
-            // Initial drawing of running screen
-            animateRunning(0, 0);
+            animateRunning();
 
-            // Timer for phase progression
             const phaseTimer = setInterval(() => {
                 if (phaseIndex < experimentPhases.length) {
-                    // Update the text status
                     phaseStatus.innerHTML = experimentPhases[phaseIndex];
-                    
-                    // Update progress bar
                     progressBar.style.width = `${((phaseIndex + 1) / experimentPhases.length) * 100}%`;
-                    
-                    // Update Live Metrics based on the phase just completed
-                    if (phaseIndex === 0) { // CFD Stability Phase Complete
-                        stabilityGauge.style.width = '95%';
-                        stabilityValue.textContent = '95%';
-                    } else if (phaseIndex === 1) { // MD Cavitation Phase Complete
-                        velocityGauge.style.width = '75%';
-                        velocityValue.textContent = '90 m/s';
-                    }
-
                     phaseIndex++;
                 } else {
                     clearInterval(phaseTimer);
                 }
             }, phaseInterval);
 
-            // After total duration, show results
             setTimeout(() => {
                 simulationRunning = false;
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
                 
                 runningDiv.classList.add('hidden');
                 resultsDiv.classList.remove('hidden');
-                drawResultsScreen();
+                
+                if (currentScenario.efficiency > 85) {
+                    finalTitle.innerHTML = "🎉 OPTIMIZED!";
+                    finalTitle.className = "text-lg md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500";
+                } else {
+                    finalTitle.innerHTML = "EXPERIMENTAL RESULTS";
+                    finalTitle.className = "text-lg md:text-2xl font-bold text-success-color";
+                }
+
+                resultsAnimating = true;
+                resultAnimationProgress = 0;
+                drawSingleResultCard(); 
             }, totalDuration);
         }
 
         function animateRunning() {
-            if (!simulationRunning) return;
+            if (!simulationRunning || !currentScenario) return;
 
-            // Calculate current metrics based on the progress bar width
-            const currentProgress = parseFloat(progressBar.style.width.replace('%', ''));
+            const currentProgress = parseFloat(progressBar.style.width.replace('%', '')) || 0;
             
             let currentStability = 0;
             let currentVelocity = 0;
+
+            const targetStability = currentScenario.stability;
+            const targetVelocity = currentScenario.velocity;
 
             const P1_END = 33.3;
             const P2_END = 66.6;
 
             if (currentProgress > 0) {
                 if (currentProgress <= P1_END) {
-                    // Phase 1 (CFD - Stability)
-                    currentStability = (currentProgress / P1_END) * 30; // Ramp up stability to 30%
+                    currentStability = (currentProgress / P1_END) * (targetStability * 0.3); 
                 } else if (currentProgress <= P2_END) {
-                    // Phase 2 (MD - Cavitation)
-                    currentStability = 30 + ((currentProgress - P1_END) / (P2_END - P1_END)) * 65; // Stability jumps to 95%
-                    currentVelocity = ((currentProgress - P1_END) / (P2_END - P1_END)) * 90; // Velocity ramps up to 90 m/s
+                    const phaseProgress = (currentProgress - P1_END) / (P2_END - P1_END);
+                    const startStability = targetStability * 0.3;
+                    currentStability = startStability + (phaseProgress * (targetStability - startStability));
+                    currentVelocity = phaseProgress * targetVelocity;
                 } else {
-                    // Phase 3 (Results Calculation)
-                    currentStability = 95;
-                    currentVelocity = 90;
+                    currentStability = targetStability;
+                    currentVelocity = targetVelocity;
                 }
             }
             
-            // Draw the visual experiment
             drawRunningScreen();
             
-            // Overlay the live metrics
-            drawMetrics(Math.min(95, Math.round(currentStability)), Math.min(90, Math.round(currentVelocity)));
+            stabilityGauge.style.width = `${Math.min(100, currentStability)}%`;
+            stabilityValue.textContent = `${currentStability.toFixed(0)}%`;
+            
+            velocityGauge.style.width = `${Math.min(100, (currentVelocity/150)*100)}%`;
+            velocityValue.textContent = `${currentVelocity.toFixed(0)} m/s`;
 
-            // Loop animation
             animationFrameId = requestAnimationFrame(animateRunning);
         }
 
-        // --- Initial Load ---
         window.onload = function() {
-            restartExperiment(); // Initial setup draw
+            const event = new Event('change');
+            concentrationSelect.dispatchEvent(event);
+            
+            resizeCanvas();
+            restartExperiment(); 
         }
-
     </script>
 </body>
 </html>
